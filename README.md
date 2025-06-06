@@ -30,3 +30,15 @@ uv add <external-package> --package bar
 # install dev dependency in monorepo
 uv add --group dev <external-package>
 ```
+
+## Docker build
+
+```bash
+# build and run foo
+docker build -f deployables/foo/Dockerfile -t foo-app .
+docker run foo-app
+
+# build and run bar
+docker build -f deployables/bar/Dockerfile -t bar-app .
+docker run bar-app
+```

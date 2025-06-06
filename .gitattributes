@@ -1,0 +1,28 @@
+# Normalize all text files to use LF and UTF-8
+* text=auto eol=lf
+
+# Treat Python files as text
+*.py text diff=python
+
+# Ensure Jupyter Notebooks are treated as binary to avoid messy diffs
+*.ipynb binary
+
+# Explicitly mark common binary formats
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.tar binary
+
+# Ignore formatting diffs in lockfiles
+uv.lock -diff
+
+# Mark shell scripts as text with sh syntax highlighting
+*.sh text eol=lf
+
+# Set linguist-detectable languages explicitly if needed
+*.py linguist-language=Python

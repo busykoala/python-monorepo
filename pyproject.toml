@@ -1,0 +1,69 @@
+[project]
+name = "uvmono"
+version = "0.1.0"
+description = "Monorepo with uv workspace"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "log",
+    "foo",
+    "bar",
+]
+
+[tool.uv.sources]
+log = { path = "./lib/log", editable = true }
+foo = { path = "./deployables/foo", editable = true }
+bar = { path = "./deployables/bar", editable = true }
+
+[dependency-groups]
+dev = [
+    "bandit>=1.7.10",
+    "mypy>=1.14.1",
+    "poethepoet>=0.30.0",
+    "pytest>=8.3.5",
+    "ruff>=0.11.13",
+]
+
+[tool.poe.tasks]
+test = { shell = '''
+for d in deployables/* lib/*; do
+  if [ -f "$d/pyproject.toml" ]; then
+    echo "🔍 Running tests in $d"
+    uv run pytest "$d" || exit 1
+  fi
+done
+'''}
+format = { shell = '''
+uv run ruff format || exit 1
+uv run ruff check --fix || exit 1
+''' }
+sast = { shell = '''
+uv run bandit -c pyproject.toml -r . || exit 1
+''' }
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "Q", "I"]
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+force-single-line = true
+
+[tool.mypy]
+python_version = "3.12"
+files = [
+    "deployables/foo/foo",
+    "deployables/bar/bar",
+    "lib/log/log",
+]
+ignore_missing_imports = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+warn_unused_ignores = true
+show_error_codes = true
+
+[tool.bandit]
+exclude_dirs = ["tests",".venv",]
+severity_level = "MEDIUM"

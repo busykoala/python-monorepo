@@ -1,0 +1,61 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environments
+.venv/
+.env/
+.uv/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+coverage.xml
+*.cover
+.cache
+.pytest_cache/
+
+# MyPy
+.mypy_cache/
+
+# Ruff
+ruff_cache/
+
+# Bandit
+bandit.yaml
+
+# Editable installs egg-info
+*.egg-info/
+*.egg
+
+# Build artifacts
+build/
+dist/
+*.log
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Python environments managed by uv
+.uv/
+__pypackages__/
+
+# Local overrides
+*.local
+
+# dotenv
+.envrc

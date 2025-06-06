@@ -1,21 +1,32 @@
-# UV POC
+# Python Monorepo PoC
+
+## Installation
 
 ```bash
-# create a virtual environment, update deps
-uv venv
 uv sync
+```
 
-# run commands in the virtual environment
-uv run python deployables/foo/foo/main.py
-uv run pytest
-uv run mypy
-uv run bandit -c pyproject.toml -r .
-uv run ruff format
-uv run ruff check --fix
+## Development
 
-# install deps
-uv add <external package> --package bar
+```bash
+# run pytest on all packages
+uv run poe test
 
-# create lock file
-uv lock
+# lint & format all packages
+uv run poe lint
+
+# run sast on all packages
+uv run poe sast
+
+# package and release a package (target)
+uv run poe package --target lib/log
+```
+
+Additionally, these commands might be useful:
+
+```bash
+# install deps to a package
+uv add <external-package> --package bar
+# install dev dependency in monorepo
+uv add --group dev <external-package>
 ```

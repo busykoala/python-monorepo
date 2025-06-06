@@ -18,10 +18,12 @@ bar = { path = "./deployables/bar", editable = true }
 [dependency-groups]
 dev = [
     "bandit>=1.7.10",
+    "build>=1.2.2.post1",
     "mypy>=1.14.1",
     "poethepoet>=0.30.0",
     "pytest>=8.3.5",
     "ruff>=0.11.13",
+    "twine>=6.1.0",
 ]
 
 [tool.poe.tasks]
@@ -40,6 +42,10 @@ uv run ruff check --fix || exit 1
 sast = { shell = '''
 uv run bandit -c pyproject.toml -r . || exit 1
 ''' }
+package = { shell = '''
+uv run python -m build "$target"
+uv run twine upload --repository testpypi "$target/dist/*"
+''', args = ["target"] }
 
 [tool.ruff]
 line-length = 79

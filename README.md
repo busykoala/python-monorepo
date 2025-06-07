@@ -19,7 +19,7 @@ uv run poe lint
 uv run poe sast
 
 # package and release a package (target)
-uv run poe package --target lib/log
+uv run poe release --target lib/log --name <log>
 
 # run type checks
 uv run poe types

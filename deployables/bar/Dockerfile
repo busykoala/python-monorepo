@@ -1,35 +1,44 @@
-# Stage 1: Build wheels as root
-FROM python:3.12-slim AS builder
+# ───── Stage 1: Build wheels ─────
+FROM python:3.12-alpine AS builder
 
 WORKDIR /build
+
+# Build dependencies
+RUN apk add --no-cache build-base
+
+# Build tools only
+RUN pip install --upgrade pip build
 
 # Copy only what's needed
 COPY lib/log lib/log
 COPY deployables/bar deployables/bar
 
-# Install build tools (system-wide is fine for build stage)
-RUN pip install --upgrade pip build
-
 # Build wheels into /dist
 RUN python -m build lib/log --wheel -o /dist && \
     python -m build deployables/bar --wheel -o /dist
 
-# Stage 2: Minimal runtime image as non-root
-FROM python:3.12-slim
+# ───── Stage 2: Minimal runtime (rootless) ─────
+FROM python:3.12-alpine
 
-# Create and switch to a non-root user
-RUN useradd -m appuser
+# Create rootless user
+RUN adduser -D -h /home/appuser appuser
+
+# Drop privileges early
 USER appuser
-
 WORKDIR /home/appuser/app
 
-# Copy built wheels from the builder stage
+# Copy only built wheels
 COPY --from=builder /dist /home/appuser/dist
 
-# Install the wheels in the correct order (to ~/.local)
-ENV PATH="/home/appuser/.local/bin:$PATH"
-RUN pip install --no-cache-dir --user /home/appuser/dist/log-*.whl && \
-    pip install --no-cache-dir --user /home/appuser/dist/bar-*.whl
+# Minimal install: --user + no pip cache + no bytecode
+ENV PATH="/home/appuser/.local/bin:$PATH" \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONOPTIMIZE=1
 
-# Entry point
+# Use pip before removing it
+RUN pip install --no-cache-dir --user /home/appuser/dist/log-*.whl && \
+    pip install --no-cache-dir --user /home/appuser/dist/bar-*.whl && \
+    rm -rf ~/.cache ~/.local/lib/python*/site-packages/pip*
+
+# Final entrypoint
 CMD ["python", "-m", "bar.main"]

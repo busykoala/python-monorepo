@@ -23,6 +23,9 @@ uv run poe package --target lib/log
 
 # run type checks
 uv run poe types
+
+# check for known CVEs
+uv run poe audit
 ```
 
 Additionally, these commands might be useful:

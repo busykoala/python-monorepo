@@ -20,6 +20,7 @@ dev = [
     "bandit>=1.7.10",
     "build>=1.2.2.post1",
     "mypy>=1.14.1",
+    "pip-audit>=2.7.3",
     "poethepoet>=0.30.0",
     "pytest>=8.3.5",
     "ruff>=0.11.13",
@@ -40,9 +41,7 @@ format = { shell = '''
 uv run ruff format || exit 1
 uv run ruff check --fix || exit 1
 ''' }
-sast = { shell = '''
-uv run bandit -c pyproject.toml -r . || exit 1
-''' }
+sast = { shell = "uv run bandit -c pyproject.toml -r . || exit 1" }
 package = { shell = '''
 uv run python -m build "$target"
 uv run twine upload --repository testpypi "$target/dist/*"
@@ -50,6 +49,7 @@ uv run twine upload --repository testpypi "$target/dist/*"
 types = { shell = '''
 uv run mypy
 ''' }
+audit = { shell = "uv run pip-audit --skip-editable" }
 
 [tool.ruff]
 line-length = 79

@@ -24,6 +24,7 @@ dev = [
     "pytest>=8.3.5",
     "ruff>=0.11.13",
     "twine>=6.1.0",
+    "types-requests>=2.32.0.20241016",
 ]
 
 [tool.poe.tasks]
@@ -46,6 +47,9 @@ package = { shell = '''
 uv run python -m build "$target"
 uv run twine upload --repository testpypi "$target/dist/*"
 ''', args = ["target"] }
+types = { shell = '''
+uv run mypy
+''' }
 
 [tool.ruff]
 line-length = 79
